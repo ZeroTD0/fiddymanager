@@ -62,9 +62,13 @@ def dashboard():
     else:
         return redirect(url_for('index'))
 
-def generate_concatenated_text():
-    with open('/Users/samanthabrown/Desktop/word_options.txt', 'r') as file:
-        all_lines = file.read()
+def custom_serializer(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError("Type not serializable")
+
+with open('C:/Users/drdjt/Downloads/word_options.txt', 'r') as file:
+    all_lines = file.read()
 
     if all_lines.count('\n') >= 4:
         selected_lines = random.sample(all_lines.splitlines(), 4)
@@ -74,19 +78,22 @@ def generate_concatenated_text():
         createTime = datetime.now().strftime('%T')
         reminder_date = datetime.now() + timedelta(days=180)
 
+        # Generate two random integers
+        random_int1 = random.randint(10, 99)
+        random_int2 = random.randint(10, 99)
+
+        # Add the integers to the concatenated text
+        concatenated_text_with_ints = concatenated_text + str(random_int1) + str(random_int2)
+
         data = {
             'timestamp': timestamp,
-            'concatenated_text': concatenated_text,
+            'concatenated_text': concatenated_text_with_ints,
             'reminder_date' : reminder_date
         }
-        def custom_serializer(obj):
-            if isinstance(obj, datetime):
-                return obj.isoformat()
-            raise TypeError("Type not serializable")
-        with open('/Users/samanthabrown/Desktop/hashwords.txt', 'a') as output_file:
+        with open('C:/Users/drdjt/OneDrive/Desktop/Hashwords.txt', 'a') as output_file:
             json.dump(data, output_file, default=custom_serializer, indent=2)
 
-        print(concatenated_text, ' generated on ', createdDate, ' at ', createTime)
+        print(concatenated_text_with_ints, ' generated on ', createdDate, ' at ', createTime)
         print('Reset your password on ', reminder_date.strftime('%D'))
 
 if __name__ == '__main__':
